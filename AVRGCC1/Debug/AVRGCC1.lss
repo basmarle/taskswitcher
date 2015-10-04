@@ -1,0 +1,843 @@
+
+AVRGCC1.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000002  00800100  000005c6  0000065a  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         000005c6  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          00000028  00800102  00800102  0000065c  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  0000065c  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  0000068c  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000050  00000000  00000000  000006cc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   00000294  00000000  00000000  0000071c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 00000167  00000000  00000000  000009b0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   00000187  00000000  00000000  00000b17  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  000000e4  00000000  00000000  00000ca0  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000218  00000000  00000000  00000d84  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00000196  00000000  00000000  00000f9c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000040  00000000  00000000  00001132  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
+   4:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+   8:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+   c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  10:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  14:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  18:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  1c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  20:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  24:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  28:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  2c:	0c 94 a6 01 	jmp	0x34c	; 0x34c <__vector_11>
+  30:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  34:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  38:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  3c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  40:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  44:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  48:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  4c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  50:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  54:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  58:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  5c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  60:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  64:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+
+00000068 <__ctors_end>:
+  68:	11 24       	eor	r1, r1
+  6a:	1f be       	out	0x3f, r1	; 63
+  6c:	cf ef       	ldi	r28, 0xFF	; 255
+  6e:	d8 e0       	ldi	r29, 0x08	; 8
+  70:	de bf       	out	0x3e, r29	; 62
+  72:	cd bf       	out	0x3d, r28	; 61
+
+00000074 <__do_copy_data>:
+  74:	11 e0       	ldi	r17, 0x01	; 1
+  76:	a0 e0       	ldi	r26, 0x00	; 0
+  78:	b1 e0       	ldi	r27, 0x01	; 1
+  7a:	e6 ec       	ldi	r30, 0xC6	; 198
+  7c:	f5 e0       	ldi	r31, 0x05	; 5
+  7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
+  80:	05 90       	lpm	r0, Z+
+  82:	0d 92       	st	X+, r0
+  84:	a2 30       	cpi	r26, 0x02	; 2
+  86:	b1 07       	cpc	r27, r17
+  88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
+
+0000008a <__do_clear_bss>:
+  8a:	21 e0       	ldi	r18, 0x01	; 1
+  8c:	a2 e0       	ldi	r26, 0x02	; 2
+  8e:	b1 e0       	ldi	r27, 0x01	; 1
+  90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
+
+00000092 <.do_clear_bss_loop>:
+  92:	1d 92       	st	X+, r1
+
+00000094 <.do_clear_bss_start>:
+  94:	aa 32       	cpi	r26, 0x2A	; 42
+  96:	b2 07       	cpc	r27, r18
+  98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
+  9a:	0e 94 52 01 	call	0x2a4	; 0x2a4 <main>
+  9e:	0c 94 e1 02 	jmp	0x5c2	; 0x5c2 <_exit>
+
+000000a2 <__bad_interrupt>:
+  a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+000000a6 <task1>:
+task_table_t task_table[MAX_TASKS];
+kernel_settings_t kernel_settings;
+
+ISR (TIMER1_COMPA_vect) __attribute__ ((naked));
+
+void * task1(){
+  a6:	cf 93       	push	r28
+  a8:	df 93       	push	r29
+  aa:	00 d0       	rcall	.+0      	; 0xac <task1+0x6>
+  ac:	00 d0       	rcall	.+0      	; 0xae <task1+0x8>
+  ae:	cd b7       	in	r28, 0x3d	; 61
+  b0:	de b7       	in	r29, 0x3e	; 62
+	long a = 0;
+  b2:	19 82       	std	Y+1, r1	; 0x01
+  b4:	1a 82       	std	Y+2, r1	; 0x02
+  b6:	1b 82       	std	Y+3, r1	; 0x03
+  b8:	1c 82       	std	Y+4, r1	; 0x04
+	while(1){
+		a++;
+  ba:	89 81       	ldd	r24, Y+1	; 0x01
+  bc:	9a 81       	ldd	r25, Y+2	; 0x02
+  be:	ab 81       	ldd	r26, Y+3	; 0x03
+  c0:	bc 81       	ldd	r27, Y+4	; 0x04
+  c2:	01 96       	adiw	r24, 0x01	; 1
+  c4:	a1 1d       	adc	r26, r1
+  c6:	b1 1d       	adc	r27, r1
+  c8:	89 83       	std	Y+1, r24	; 0x01
+  ca:	9a 83       	std	Y+2, r25	; 0x02
+  cc:	ab 83       	std	Y+3, r26	; 0x03
+  ce:	bc 83       	std	Y+4, r27	; 0x04
+		//if(a == 5000){
+			PORTB = (0 << PINB5);
+  d0:	85 e2       	ldi	r24, 0x25	; 37
+  d2:	90 e0       	ldi	r25, 0x00	; 0
+  d4:	fc 01       	movw	r30, r24
+  d6:	10 82       	st	Z, r1
+			a = 0;
+  d8:	19 82       	std	Y+1, r1	; 0x01
+  da:	1a 82       	std	Y+2, r1	; 0x02
+  dc:	1b 82       	std	Y+3, r1	; 0x03
+  de:	1c 82       	std	Y+4, r1	; 0x04
+		//}
+		
+	}
+  e0:	ec cf       	rjmp	.-40     	; 0xba <task1+0x14>
+
+000000e2 <task2>:
+}
+
+void * task2(){
+  e2:	cf 93       	push	r28
+  e4:	df 93       	push	r29
+  e6:	00 d0       	rcall	.+0      	; 0xe8 <task2+0x6>
+  e8:	00 d0       	rcall	.+0      	; 0xea <task2+0x8>
+  ea:	cd b7       	in	r28, 0x3d	; 61
+  ec:	de b7       	in	r29, 0x3e	; 62
+	long b = 0;
+  ee:	19 82       	std	Y+1, r1	; 0x01
+  f0:	1a 82       	std	Y+2, r1	; 0x02
+  f2:	1b 82       	std	Y+3, r1	; 0x03
+  f4:	1c 82       	std	Y+4, r1	; 0x04
+	while(1){
+		b++;
+  f6:	89 81       	ldd	r24, Y+1	; 0x01
+  f8:	9a 81       	ldd	r25, Y+2	; 0x02
+  fa:	ab 81       	ldd	r26, Y+3	; 0x03
+  fc:	bc 81       	ldd	r27, Y+4	; 0x04
+  fe:	01 96       	adiw	r24, 0x01	; 1
+ 100:	a1 1d       	adc	r26, r1
+ 102:	b1 1d       	adc	r27, r1
+ 104:	89 83       	std	Y+1, r24	; 0x01
+ 106:	9a 83       	std	Y+2, r25	; 0x02
+ 108:	ab 83       	std	Y+3, r26	; 0x03
+ 10a:	bc 83       	std	Y+4, r27	; 0x04
+		//if(b == 5000){
+			PORTB = (1 << PINB5);
+ 10c:	85 e2       	ldi	r24, 0x25	; 37
+ 10e:	90 e0       	ldi	r25, 0x00	; 0
+ 110:	20 e2       	ldi	r18, 0x20	; 32
+ 112:	fc 01       	movw	r30, r24
+ 114:	20 83       	st	Z, r18
+			b = 0;
+ 116:	19 82       	std	Y+1, r1	; 0x01
+ 118:	1a 82       	std	Y+2, r1	; 0x02
+ 11a:	1b 82       	std	Y+3, r1	; 0x03
+ 11c:	1c 82       	std	Y+4, r1	; 0x04
+		//}
+	}
+ 11e:	eb cf       	rjmp	.-42     	; 0xf6 <task2+0x14>
+
+00000120 <initTask>:
+}
+
+void initTask(void * taskAddress){
+ 120:	cf 93       	push	r28
+ 122:	df 93       	push	r29
+ 124:	00 d0       	rcall	.+0      	; 0x126 <initTask+0x6>
+ 126:	cd b7       	in	r28, 0x3d	; 61
+ 128:	de b7       	in	r29, 0x3e	; 62
+ 12a:	9a 83       	std	Y+2, r25	; 0x02
+ 12c:	89 83       	std	Y+1, r24	; 0x01
+	static int taskCount = 0;
+	
+	//Set ID of task
+	task_table[taskCount].id = taskCount;
+ 12e:	80 91 06 01 	lds	r24, 0x0106
+ 132:	90 91 07 01 	lds	r25, 0x0107
+ 136:	20 91 06 01 	lds	r18, 0x0106
+ 13a:	30 91 07 01 	lds	r19, 0x0107
+ 13e:	82 95       	swap	r24
+ 140:	92 95       	swap	r25
+ 142:	90 7f       	andi	r25, 0xF0	; 240
+ 144:	98 27       	eor	r25, r24
+ 146:	80 7f       	andi	r24, 0xF0	; 240
+ 148:	98 27       	eor	r25, r24
+ 14a:	86 5f       	subi	r24, 0xF6	; 246
+ 14c:	9e 4f       	sbci	r25, 0xFE	; 254
+ 14e:	fc 01       	movw	r30, r24
+ 150:	31 83       	std	Z+1, r19	; 0x01
+ 152:	20 83       	st	Z, r18
+	//Start address of the task
+	task_table[taskCount].address = taskAddress;
+ 154:	80 91 06 01 	lds	r24, 0x0106
+ 158:	90 91 07 01 	lds	r25, 0x0107
+ 15c:	82 95       	swap	r24
+ 15e:	92 95       	swap	r25
+ 160:	90 7f       	andi	r25, 0xF0	; 240
+ 162:	98 27       	eor	r25, r24
+ 164:	80 7f       	andi	r24, 0xF0	; 240
+ 166:	98 27       	eor	r25, r24
+ 168:	8a 5e       	subi	r24, 0xEA	; 234
+ 16a:	9e 4f       	sbci	r25, 0xFE	; 254
+ 16c:	29 81       	ldd	r18, Y+1	; 0x01
+ 16e:	3a 81       	ldd	r19, Y+2	; 0x02
+ 170:	fc 01       	movw	r30, r24
+ 172:	31 83       	std	Z+1, r19	; 0x01
+ 174:	20 83       	st	Z, r18
+	//Split into 2 bytes
+	task_table[taskCount].pcl = ((int)task_table[taskCount].address & 0x00FF);
+ 176:	80 91 06 01 	lds	r24, 0x0106
+ 17a:	90 91 07 01 	lds	r25, 0x0107
+ 17e:	20 91 06 01 	lds	r18, 0x0106
+ 182:	30 91 07 01 	lds	r19, 0x0107
+ 186:	22 95       	swap	r18
+ 188:	32 95       	swap	r19
+ 18a:	30 7f       	andi	r19, 0xF0	; 240
+ 18c:	32 27       	eor	r19, r18
+ 18e:	20 7f       	andi	r18, 0xF0	; 240
+ 190:	32 27       	eor	r19, r18
+ 192:	2a 5e       	subi	r18, 0xEA	; 234
+ 194:	3e 4f       	sbci	r19, 0xFE	; 254
+ 196:	f9 01       	movw	r30, r18
+ 198:	20 81       	ld	r18, Z
+ 19a:	31 81       	ldd	r19, Z+1	; 0x01
+ 19c:	33 27       	eor	r19, r19
+ 19e:	82 95       	swap	r24
+ 1a0:	92 95       	swap	r25
+ 1a2:	90 7f       	andi	r25, 0xF0	; 240
+ 1a4:	98 27       	eor	r25, r24
+ 1a6:	80 7f       	andi	r24, 0xF0	; 240
+ 1a8:	98 27       	eor	r25, r24
+ 1aa:	8e 5e       	subi	r24, 0xEE	; 238
+ 1ac:	9e 4f       	sbci	r25, 0xFE	; 254
+ 1ae:	fc 01       	movw	r30, r24
+ 1b0:	31 83       	std	Z+1, r19	; 0x01
+ 1b2:	20 83       	st	Z, r18
+	task_table[taskCount].pch = ((int)task_table[taskCount].address & 0xFF00) >> 8;
+ 1b4:	80 91 06 01 	lds	r24, 0x0106
+ 1b8:	90 91 07 01 	lds	r25, 0x0107
+ 1bc:	20 91 06 01 	lds	r18, 0x0106
+ 1c0:	30 91 07 01 	lds	r19, 0x0107
+ 1c4:	22 95       	swap	r18
+ 1c6:	32 95       	swap	r19
+ 1c8:	30 7f       	andi	r19, 0xF0	; 240
+ 1ca:	32 27       	eor	r19, r18
+ 1cc:	20 7f       	andi	r18, 0xF0	; 240
+ 1ce:	32 27       	eor	r19, r18
+ 1d0:	2a 5e       	subi	r18, 0xEA	; 234
+ 1d2:	3e 4f       	sbci	r19, 0xFE	; 254
+ 1d4:	f9 01       	movw	r30, r18
+ 1d6:	20 81       	ld	r18, Z
+ 1d8:	31 81       	ldd	r19, Z+1	; 0x01
+ 1da:	23 2f       	mov	r18, r19
+ 1dc:	33 27       	eor	r19, r19
+ 1de:	82 95       	swap	r24
+ 1e0:	92 95       	swap	r25
+ 1e2:	90 7f       	andi	r25, 0xF0	; 240
+ 1e4:	98 27       	eor	r25, r24
+ 1e6:	80 7f       	andi	r24, 0xF0	; 240
+ 1e8:	98 27       	eor	r25, r24
+ 1ea:	8c 5e       	subi	r24, 0xEC	; 236
+ 1ec:	9e 4f       	sbci	r25, 0xFE	; 254
+ 1ee:	fc 01       	movw	r30, r24
+ 1f0:	31 83       	std	Z+1, r19	; 0x01
+ 1f2:	20 83       	st	Z, r18
+	//Set taskpointer
+	task_table[taskCount].spl = (0x7D0 - (taskCount * 0x64)) & 0x00FF;
+ 1f4:	80 91 06 01 	lds	r24, 0x0106
+ 1f8:	90 91 07 01 	lds	r25, 0x0107
+ 1fc:	40 91 06 01 	lds	r20, 0x0106
+ 200:	50 91 07 01 	lds	r21, 0x0107
+ 204:	6c e9       	ldi	r22, 0x9C	; 156
+ 206:	64 03       	mulsu	r22, r20
+ 208:	90 01       	movw	r18, r0
+ 20a:	65 9f       	mul	r22, r21
+ 20c:	30 0d       	add	r19, r0
+ 20e:	11 24       	eor	r1, r1
+ 210:	20 53       	subi	r18, 0x30	; 48
+ 212:	38 4f       	sbci	r19, 0xF8	; 248
+ 214:	33 27       	eor	r19, r19
+ 216:	82 95       	swap	r24
+ 218:	92 95       	swap	r25
+ 21a:	90 7f       	andi	r25, 0xF0	; 240
+ 21c:	98 27       	eor	r25, r24
+ 21e:	80 7f       	andi	r24, 0xF0	; 240
+ 220:	98 27       	eor	r25, r24
+ 222:	82 5f       	subi	r24, 0xF2	; 242
+ 224:	9e 4f       	sbci	r25, 0xFE	; 254
+ 226:	fc 01       	movw	r30, r24
+ 228:	31 83       	std	Z+1, r19	; 0x01
+ 22a:	20 83       	st	Z, r18
+	task_table[taskCount].sph = ((0x7D0 - (taskCount * 0x64)) & 0xFF00) >> 8;
+ 22c:	80 91 06 01 	lds	r24, 0x0106
+ 230:	90 91 07 01 	lds	r25, 0x0107
+ 234:	40 91 06 01 	lds	r20, 0x0106
+ 238:	50 91 07 01 	lds	r21, 0x0107
+ 23c:	6c e9       	ldi	r22, 0x9C	; 156
+ 23e:	64 03       	mulsu	r22, r20
+ 240:	90 01       	movw	r18, r0
+ 242:	65 9f       	mul	r22, r21
+ 244:	30 0d       	add	r19, r0
+ 246:	11 24       	eor	r1, r1
+ 248:	20 53       	subi	r18, 0x30	; 48
+ 24a:	38 4f       	sbci	r19, 0xF8	; 248
+ 24c:	23 2f       	mov	r18, r19
+ 24e:	33 27       	eor	r19, r19
+ 250:	82 95       	swap	r24
+ 252:	92 95       	swap	r25
+ 254:	90 7f       	andi	r25, 0xF0	; 240
+ 256:	98 27       	eor	r25, r24
+ 258:	80 7f       	andi	r24, 0xF0	; 240
+ 25a:	98 27       	eor	r25, r24
+ 25c:	84 5f       	subi	r24, 0xF4	; 244
+ 25e:	9e 4f       	sbci	r25, 0xFE	; 254
+ 260:	fc 01       	movw	r30, r24
+ 262:	31 83       	std	Z+1, r19	; 0x01
+ 264:	20 83       	st	Z, r18
+	task_table[taskCount].firsttime = 1;
+ 266:	80 91 06 01 	lds	r24, 0x0106
+ 26a:	90 91 07 01 	lds	r25, 0x0107
+ 26e:	82 95       	swap	r24
+ 270:	92 95       	swap	r25
+ 272:	90 7f       	andi	r25, 0xF0	; 240
+ 274:	98 27       	eor	r25, r24
+ 276:	80 7f       	andi	r24, 0xF0	; 240
+ 278:	98 27       	eor	r25, r24
+ 27a:	88 5e       	subi	r24, 0xE8	; 232
+ 27c:	9e 4f       	sbci	r25, 0xFE	; 254
+ 27e:	21 e0       	ldi	r18, 0x01	; 1
+ 280:	30 e0       	ldi	r19, 0x00	; 0
+ 282:	fc 01       	movw	r30, r24
+ 284:	31 83       	std	Z+1, r19	; 0x01
+ 286:	20 83       	st	Z, r18
+	
+	taskCount++;
+ 288:	80 91 06 01 	lds	r24, 0x0106
+ 28c:	90 91 07 01 	lds	r25, 0x0107
+ 290:	01 96       	adiw	r24, 0x01	; 1
+ 292:	90 93 07 01 	sts	0x0107, r25
+ 296:	80 93 06 01 	sts	0x0106, r24
+}
+ 29a:	0f 90       	pop	r0
+ 29c:	0f 90       	pop	r0
+ 29e:	df 91       	pop	r29
+ 2a0:	cf 91       	pop	r28
+ 2a2:	08 95       	ret
+
+000002a4 <main>:
+
+int main(void)
+{
+ 2a4:	cf 93       	push	r28
+ 2a6:	df 93       	push	r29
+ 2a8:	cd b7       	in	r28, 0x3d	; 61
+ 2aa:	de b7       	in	r29, 0x3e	; 62
+	cli();//stop interrupts
+ 2ac:	f8 94       	cli
+	
+	//All pins in PORTD are outputs
+	DDRB = 0b11111111;    
+ 2ae:	84 e2       	ldi	r24, 0x24	; 36
+ 2b0:	90 e0       	ldi	r25, 0x00	; 0
+ 2b2:	2f ef       	ldi	r18, 0xFF	; 255
+ 2b4:	fc 01       	movw	r30, r24
+ 2b6:	20 83       	st	Z, r18
+	//Set the tik count for each task
+	kernel_settings.taskClockCount = 100;
+ 2b8:	84 e6       	ldi	r24, 0x64	; 100
+ 2ba:	90 e0       	ldi	r25, 0x00	; 0
+ 2bc:	90 93 09 01 	sts	0x0109, r25
+ 2c0:	80 93 08 01 	sts	0x0108, r24
+
+	TCCR1A = 0;// set entire TCCR1A register to 0
+ 2c4:	80 e8       	ldi	r24, 0x80	; 128
+ 2c6:	90 e0       	ldi	r25, 0x00	; 0
+ 2c8:	fc 01       	movw	r30, r24
+ 2ca:	10 82       	st	Z, r1
+	TCCR1B = 0;// same for TCCR1B
+ 2cc:	81 e8       	ldi	r24, 0x81	; 129
+ 2ce:	90 e0       	ldi	r25, 0x00	; 0
+ 2d0:	fc 01       	movw	r30, r24
+ 2d2:	10 82       	st	Z, r1
+	TCNT1  = 0;//initialize counter value to 0
+ 2d4:	84 e8       	ldi	r24, 0x84	; 132
+ 2d6:	90 e0       	ldi	r25, 0x00	; 0
+ 2d8:	fc 01       	movw	r30, r24
+ 2da:	11 82       	std	Z+1, r1	; 0x01
+ 2dc:	10 82       	st	Z, r1
+	OCR1A = kernel_settings.taskClockCount;
+ 2de:	88 e8       	ldi	r24, 0x88	; 136
+ 2e0:	90 e0       	ldi	r25, 0x00	; 0
+ 2e2:	20 91 08 01 	lds	r18, 0x0108
+ 2e6:	30 91 09 01 	lds	r19, 0x0109
+ 2ea:	fc 01       	movw	r30, r24
+ 2ec:	31 83       	std	Z+1, r19	; 0x01
+ 2ee:	20 83       	st	Z, r18
+	// turn on CTC mode
+	TCCR1B |= (1 << WGM12);
+ 2f0:	81 e8       	ldi	r24, 0x81	; 129
+ 2f2:	90 e0       	ldi	r25, 0x00	; 0
+ 2f4:	21 e8       	ldi	r18, 0x81	; 129
+ 2f6:	30 e0       	ldi	r19, 0x00	; 0
+ 2f8:	f9 01       	movw	r30, r18
+ 2fa:	20 81       	ld	r18, Z
+ 2fc:	28 60       	ori	r18, 0x08	; 8
+ 2fe:	fc 01       	movw	r30, r24
+ 300:	20 83       	st	Z, r18
+	// Set bit for prescaler
+	TCCR1B |= (1 << CS10);
+ 302:	81 e8       	ldi	r24, 0x81	; 129
+ 304:	90 e0       	ldi	r25, 0x00	; 0
+ 306:	21 e8       	ldi	r18, 0x81	; 129
+ 308:	30 e0       	ldi	r19, 0x00	; 0
+ 30a:	f9 01       	movw	r30, r18
+ 30c:	20 81       	ld	r18, Z
+ 30e:	21 60       	ori	r18, 0x01	; 1
+ 310:	fc 01       	movw	r30, r24
+ 312:	20 83       	st	Z, r18
+	// enable timer compare interrupt
+	TIMSK1 |= (1 << OCIE1A);
+ 314:	8f e6       	ldi	r24, 0x6F	; 111
+ 316:	90 e0       	ldi	r25, 0x00	; 0
+ 318:	2f e6       	ldi	r18, 0x6F	; 111
+ 31a:	30 e0       	ldi	r19, 0x00	; 0
+ 31c:	f9 01       	movw	r30, r18
+ 31e:	20 81       	ld	r18, Z
+ 320:	22 60       	ori	r18, 0x02	; 2
+ 322:	fc 01       	movw	r30, r24
+ 324:	20 83       	st	Z, r18
+	
+	
+	initTask(task1);
+ 326:	83 e5       	ldi	r24, 0x53	; 83
+ 328:	90 e0       	ldi	r25, 0x00	; 0
+ 32a:	0e 94 90 00 	call	0x120	; 0x120 <initTask>
+	initTask(task2);
+ 32e:	81 e7       	ldi	r24, 0x71	; 113
+ 330:	90 e0       	ldi	r25, 0x00	; 0
+ 332:	0e 94 90 00 	call	0x120	; 0x120 <initTask>
+
+	sei();//allow interrupts
+ 336:	78 94       	sei
+	
+	while (1)
+	{
+		// we have a working Timer
+		counter++;
+ 338:	80 91 02 01 	lds	r24, 0x0102
+ 33c:	90 91 03 01 	lds	r25, 0x0103
+ 340:	01 96       	adiw	r24, 0x01	; 1
+ 342:	90 93 03 01 	sts	0x0103, r25
+ 346:	80 93 02 01 	sts	0x0102, r24
+	}
+ 34a:	f6 cf       	rjmp	.-20     	; 0x338 <main+0x94>
+
+0000034c <__vector_11>:
+
+
+ISR (TIMER1_COMPA_vect)
+{
+	//Disable interrupts
+	cli();
+ 34c:	f8 94       	cli
+	
+	//Do not switch context on first run
+	if(firstrun){
+ 34e:	80 91 00 01 	lds	r24, 0x0100
+ 352:	90 91 01 01 	lds	r25, 0x0101
+ 356:	89 2b       	or	r24, r25
+ 358:	09 f1       	breq	.+66     	; 0x39c <__vector_11+0x50>
+		//Only run once
+		firstrun = 0;
+ 35a:	10 92 01 01 	sts	0x0101, r1
+ 35e:	10 92 00 01 	sts	0x0100, r1
+		//Set stack pointer
+		asm volatile("MOV r0, %[lowAddress] " :: [lowAddress] "r" (task_table[0].spl));
+ 362:	80 91 0e 01 	lds	r24, 0x010E
+ 366:	90 91 0f 01 	lds	r25, 0x010F
+ 36a:	08 2e       	mov	r0, r24
+		asm volatile("OUT __SP_L__, r0");
+ 36c:	0d be       	out	0x3d, r0	; 61
+		asm volatile("MOV r0, %[highAddress] " :: [highAddress] "r" (task_table[0].sph));
+ 36e:	80 91 0c 01 	lds	r24, 0x010C
+ 372:	90 91 0d 01 	lds	r25, 0x010D
+ 376:	08 2e       	mov	r0, r24
+		asm volatile("OUT __SP_H__, r0");
+ 378:	0e be       	out	0x3e, r0	; 62
+		
+		asm("MOV R18, %[lowAdress]" :: [lowAdress] "r" (task_table[0].pcl));
+ 37a:	80 91 12 01 	lds	r24, 0x0112
+ 37e:	90 91 13 01 	lds	r25, 0x0113
+ 382:	28 2f       	mov	r18, r24
+		asm("PUSH R18");
+ 384:	2f 93       	push	r18
+		asm("MOV R18, %[highAdress]" :: [highAdress] "r" (task_table[0].pch));
+ 386:	80 91 14 01 	lds	r24, 0x0114
+ 38a:	90 91 15 01 	lds	r25, 0x0115
+ 38e:	28 2f       	mov	r18, r24
+		asm("PUSH 18");
+ 390:	2f 93       	push	r18
+		task_table[0].firsttime = 0;
+ 392:	10 92 19 01 	sts	0x0119, r1
+ 396:	10 92 18 01 	sts	0x0118, r1
+ 39a:	07 c1       	rjmp	.+526    	; 0x5aa <__vector_11+0x25e>
+		
+	} else {
+			
+		//Save context
+		asm volatile (
+ 39c:	0f 92       	push	r0
+ 39e:	0f b6       	in	r0, 0x3f	; 63
+ 3a0:	f8 94       	cli
+ 3a2:	0f 92       	push	r0
+ 3a4:	1f 92       	push	r1
+ 3a6:	11 24       	eor	r1, r1
+ 3a8:	2f 92       	push	r2
+ 3aa:	3f 92       	push	r3
+ 3ac:	4f 92       	push	r4
+ 3ae:	5f 92       	push	r5
+ 3b0:	6f 92       	push	r6
+ 3b2:	7f 92       	push	r7
+ 3b4:	8f 92       	push	r8
+ 3b6:	9f 92       	push	r9
+ 3b8:	af 92       	push	r10
+ 3ba:	bf 92       	push	r11
+ 3bc:	cf 92       	push	r12
+ 3be:	df 92       	push	r13
+ 3c0:	ef 92       	push	r14
+ 3c2:	ff 92       	push	r15
+ 3c4:	0f 93       	push	r16
+ 3c6:	1f 93       	push	r17
+ 3c8:	2f 93       	push	r18
+ 3ca:	3f 93       	push	r19
+ 3cc:	4f 93       	push	r20
+ 3ce:	5f 93       	push	r21
+ 3d0:	6f 93       	push	r22
+ 3d2:	7f 93       	push	r23
+ 3d4:	8f 93       	push	r24
+ 3d6:	9f 93       	push	r25
+ 3d8:	af 93       	push	r26
+ 3da:	bf 93       	push	r27
+ 3dc:	cf 93       	push	r28
+ 3de:	df 93       	push	r29
+ 3e0:	ef 93       	push	r30
+ 3e2:	ff 93       	push	r31
+		"push  r29                   \n\t" \
+		"push  r30                   \n\t" \
+		"push  r31                   \n\t");
+			
+		//Store stackpointer in TCB
+		asm volatile("in    r0, __SP_L__");
+ 3e4:	0d b6       	in	r0, 0x3d	; 61
+		asm volatile("MOV %[lowAdress], r0 ": [lowAdress] "=r" (task_table[current_task].spl) : );
+ 3e6:	80 91 04 01 	lds	r24, 0x0104
+ 3ea:	90 91 05 01 	lds	r25, 0x0105
+ 3ee:	20 2d       	mov	r18, r0
+ 3f0:	82 95       	swap	r24
+ 3f2:	92 95       	swap	r25
+ 3f4:	90 7f       	andi	r25, 0xF0	; 240
+ 3f6:	98 27       	eor	r25, r24
+ 3f8:	80 7f       	andi	r24, 0xF0	; 240
+ 3fa:	98 27       	eor	r25, r24
+ 3fc:	82 5f       	subi	r24, 0xF2	; 242
+ 3fe:	9e 4f       	sbci	r25, 0xFE	; 254
+ 400:	fc 01       	movw	r30, r24
+ 402:	31 83       	std	Z+1, r19	; 0x01
+ 404:	20 83       	st	Z, r18
+		asm volatile("in    r0, __SP_H__");
+ 406:	0e b6       	in	r0, 0x3e	; 62
+		asm volatile("MOV %[highAdress], r0 ": [highAdress] "=r" (task_table[current_task].sph) : );
+ 408:	80 91 04 01 	lds	r24, 0x0104
+ 40c:	90 91 05 01 	lds	r25, 0x0105
+ 410:	20 2d       	mov	r18, r0
+ 412:	82 95       	swap	r24
+ 414:	92 95       	swap	r25
+ 416:	90 7f       	andi	r25, 0xF0	; 240
+ 418:	98 27       	eor	r25, r24
+ 41a:	80 7f       	andi	r24, 0xF0	; 240
+ 41c:	98 27       	eor	r25, r24
+ 41e:	84 5f       	subi	r24, 0xF4	; 244
+ 420:	9e 4f       	sbci	r25, 0xFE	; 254
+ 422:	fc 01       	movw	r30, r24
+ 424:	31 83       	std	Z+1, r19	; 0x01
+ 426:	20 83       	st	Z, r18
+		
+		//Select the current task
+		if(current_task == 0){
+ 428:	80 91 04 01 	lds	r24, 0x0104
+ 42c:	90 91 05 01 	lds	r25, 0x0105
+ 430:	89 2b       	or	r24, r25
+ 432:	39 f4       	brne	.+14     	; 0x442 <__vector_11+0xf6>
+			current_task = 1;
+ 434:	81 e0       	ldi	r24, 0x01	; 1
+ 436:	90 e0       	ldi	r25, 0x00	; 0
+ 438:	90 93 05 01 	sts	0x0105, r25
+ 43c:	80 93 04 01 	sts	0x0104, r24
+ 440:	0a c0       	rjmp	.+20     	; 0x456 <__vector_11+0x10a>
+			}else if(current_task == 1){
+ 442:	80 91 04 01 	lds	r24, 0x0104
+ 446:	90 91 05 01 	lds	r25, 0x0105
+ 44a:	01 97       	sbiw	r24, 0x01	; 1
+ 44c:	21 f4       	brne	.+8      	; 0x456 <__vector_11+0x10a>
+			current_task = 0;
+ 44e:	10 92 05 01 	sts	0x0105, r1
+ 452:	10 92 04 01 	sts	0x0104, r1
+		}
+		
+		if(task_table[current_task].firsttime){
+ 456:	80 91 04 01 	lds	r24, 0x0104
+ 45a:	90 91 05 01 	lds	r25, 0x0105
+ 45e:	82 95       	swap	r24
+ 460:	92 95       	swap	r25
+ 462:	90 7f       	andi	r25, 0xF0	; 240
+ 464:	98 27       	eor	r25, r24
+ 466:	80 7f       	andi	r24, 0xF0	; 240
+ 468:	98 27       	eor	r25, r24
+ 46a:	88 5e       	subi	r24, 0xE8	; 232
+ 46c:	9e 4f       	sbci	r25, 0xFE	; 254
+ 46e:	fc 01       	movw	r30, r24
+ 470:	80 81       	ld	r24, Z
+ 472:	91 81       	ldd	r25, Z+1	; 0x01
+ 474:	89 2b       	or	r24, r25
+ 476:	09 f4       	brne	.+2      	; 0x47a <__vector_11+0x12e>
+ 478:	54 c0       	rjmp	.+168    	; 0x522 <__vector_11+0x1d6>
+			asm volatile("MOV r0, %[lowAddress] " :: [lowAddress] "r" (task_table[current_task].spl));
+ 47a:	80 91 04 01 	lds	r24, 0x0104
+ 47e:	90 91 05 01 	lds	r25, 0x0105
+ 482:	82 95       	swap	r24
+ 484:	92 95       	swap	r25
+ 486:	90 7f       	andi	r25, 0xF0	; 240
+ 488:	98 27       	eor	r25, r24
+ 48a:	80 7f       	andi	r24, 0xF0	; 240
+ 48c:	98 27       	eor	r25, r24
+ 48e:	82 5f       	subi	r24, 0xF2	; 242
+ 490:	9e 4f       	sbci	r25, 0xFE	; 254
+ 492:	fc 01       	movw	r30, r24
+ 494:	80 81       	ld	r24, Z
+ 496:	91 81       	ldd	r25, Z+1	; 0x01
+ 498:	08 2e       	mov	r0, r24
+			asm volatile("OUT __SP_L__, r0");
+ 49a:	0d be       	out	0x3d, r0	; 61
+			asm volatile("MOV r0, %[highAddress] " :: [highAddress] "r" (task_table[current_task].sph));
+ 49c:	80 91 04 01 	lds	r24, 0x0104
+ 4a0:	90 91 05 01 	lds	r25, 0x0105
+ 4a4:	82 95       	swap	r24
+ 4a6:	92 95       	swap	r25
+ 4a8:	90 7f       	andi	r25, 0xF0	; 240
+ 4aa:	98 27       	eor	r25, r24
+ 4ac:	80 7f       	andi	r24, 0xF0	; 240
+ 4ae:	98 27       	eor	r25, r24
+ 4b0:	84 5f       	subi	r24, 0xF4	; 244
+ 4b2:	9e 4f       	sbci	r25, 0xFE	; 254
+ 4b4:	fc 01       	movw	r30, r24
+ 4b6:	80 81       	ld	r24, Z
+ 4b8:	91 81       	ldd	r25, Z+1	; 0x01
+ 4ba:	08 2e       	mov	r0, r24
+			asm volatile("OUT __SP_H__, r0");
+ 4bc:	0e be       	out	0x3e, r0	; 62
+			
+			asm("MOV R18, %[lowAdress]" :: [lowAdress] "r" (task_table[current_task].pcl));
+ 4be:	80 91 04 01 	lds	r24, 0x0104
+ 4c2:	90 91 05 01 	lds	r25, 0x0105
+ 4c6:	82 95       	swap	r24
+ 4c8:	92 95       	swap	r25
+ 4ca:	90 7f       	andi	r25, 0xF0	; 240
+ 4cc:	98 27       	eor	r25, r24
+ 4ce:	80 7f       	andi	r24, 0xF0	; 240
+ 4d0:	98 27       	eor	r25, r24
+ 4d2:	8e 5e       	subi	r24, 0xEE	; 238
+ 4d4:	9e 4f       	sbci	r25, 0xFE	; 254
+ 4d6:	fc 01       	movw	r30, r24
+ 4d8:	80 81       	ld	r24, Z
+ 4da:	91 81       	ldd	r25, Z+1	; 0x01
+ 4dc:	28 2f       	mov	r18, r24
+			asm("PUSH R18");
+ 4de:	2f 93       	push	r18
+			asm("MOV R18, %[highAdress]" :: [highAdress] "r" (task_table[current_task].pch));
+ 4e0:	80 91 04 01 	lds	r24, 0x0104
+ 4e4:	90 91 05 01 	lds	r25, 0x0105
+ 4e8:	82 95       	swap	r24
+ 4ea:	92 95       	swap	r25
+ 4ec:	90 7f       	andi	r25, 0xF0	; 240
+ 4ee:	98 27       	eor	r25, r24
+ 4f0:	80 7f       	andi	r24, 0xF0	; 240
+ 4f2:	98 27       	eor	r25, r24
+ 4f4:	8c 5e       	subi	r24, 0xEC	; 236
+ 4f6:	9e 4f       	sbci	r25, 0xFE	; 254
+ 4f8:	fc 01       	movw	r30, r24
+ 4fa:	80 81       	ld	r24, Z
+ 4fc:	91 81       	ldd	r25, Z+1	; 0x01
+ 4fe:	28 2f       	mov	r18, r24
+			asm("PUSH 18");
+ 500:	2f 93       	push	r18
+			task_table[current_task].firsttime = 0;
+ 502:	80 91 04 01 	lds	r24, 0x0104
+ 506:	90 91 05 01 	lds	r25, 0x0105
+ 50a:	82 95       	swap	r24
+ 50c:	92 95       	swap	r25
+ 50e:	90 7f       	andi	r25, 0xF0	; 240
+ 510:	98 27       	eor	r25, r24
+ 512:	80 7f       	andi	r24, 0xF0	; 240
+ 514:	98 27       	eor	r25, r24
+ 516:	88 5e       	subi	r24, 0xE8	; 232
+ 518:	9e 4f       	sbci	r25, 0xFE	; 254
+ 51a:	fc 01       	movw	r30, r24
+ 51c:	11 82       	std	Z+1, r1	; 0x01
+ 51e:	10 82       	st	Z, r1
+ 520:	44 c0       	rjmp	.+136    	; 0x5aa <__vector_11+0x25e>
+		} else {
+			//Load stack pointers
+			asm volatile("MOV r0, %[lowAddress] " :: [lowAddress] "r" (task_table[current_task].spl));
+ 522:	80 91 04 01 	lds	r24, 0x0104
+ 526:	90 91 05 01 	lds	r25, 0x0105
+ 52a:	82 95       	swap	r24
+ 52c:	92 95       	swap	r25
+ 52e:	90 7f       	andi	r25, 0xF0	; 240
+ 530:	98 27       	eor	r25, r24
+ 532:	80 7f       	andi	r24, 0xF0	; 240
+ 534:	98 27       	eor	r25, r24
+ 536:	82 5f       	subi	r24, 0xF2	; 242
+ 538:	9e 4f       	sbci	r25, 0xFE	; 254
+ 53a:	fc 01       	movw	r30, r24
+ 53c:	80 81       	ld	r24, Z
+ 53e:	91 81       	ldd	r25, Z+1	; 0x01
+ 540:	08 2e       	mov	r0, r24
+			asm volatile("OUT __SP_L__, r0");
+ 542:	0d be       	out	0x3d, r0	; 61
+			asm volatile("MOV r0, %[highAddress] " :: [highAddress] "r" (task_table[current_task].sph));
+ 544:	80 91 04 01 	lds	r24, 0x0104
+ 548:	90 91 05 01 	lds	r25, 0x0105
+ 54c:	82 95       	swap	r24
+ 54e:	92 95       	swap	r25
+ 550:	90 7f       	andi	r25, 0xF0	; 240
+ 552:	98 27       	eor	r25, r24
+ 554:	80 7f       	andi	r24, 0xF0	; 240
+ 556:	98 27       	eor	r25, r24
+ 558:	84 5f       	subi	r24, 0xF4	; 244
+ 55a:	9e 4f       	sbci	r25, 0xFE	; 254
+ 55c:	fc 01       	movw	r30, r24
+ 55e:	80 81       	ld	r24, Z
+ 560:	91 81       	ldd	r25, Z+1	; 0x01
+ 562:	08 2e       	mov	r0, r24
+			asm volatile("OUT __SP_H__, r0");
+ 564:	0e be       	out	0x3e, r0	; 62
+						
+			//Load context
+			asm volatile (
+ 566:	ff 91       	pop	r31
+ 568:	ef 91       	pop	r30
+ 56a:	df 91       	pop	r29
+ 56c:	cf 91       	pop	r28
+ 56e:	bf 91       	pop	r27
+ 570:	af 91       	pop	r26
+ 572:	9f 91       	pop	r25
+ 574:	8f 91       	pop	r24
+ 576:	7f 91       	pop	r23
+ 578:	6f 91       	pop	r22
+ 57a:	5f 91       	pop	r21
+ 57c:	4f 91       	pop	r20
+ 57e:	3f 91       	pop	r19
+ 580:	2f 91       	pop	r18
+ 582:	1f 91       	pop	r17
+ 584:	0f 91       	pop	r16
+ 586:	ff 90       	pop	r15
+ 588:	ef 90       	pop	r14
+ 58a:	df 90       	pop	r13
+ 58c:	cf 90       	pop	r12
+ 58e:	bf 90       	pop	r11
+ 590:	af 90       	pop	r10
+ 592:	9f 90       	pop	r9
+ 594:	8f 90       	pop	r8
+ 596:	7f 90       	pop	r7
+ 598:	6f 90       	pop	r6
+ 59a:	5f 90       	pop	r5
+ 59c:	4f 90       	pop	r4
+ 59e:	3f 90       	pop	r3
+ 5a0:	2f 90       	pop	r2
+ 5a2:	1f 90       	pop	r1
+ 5a4:	0f 90       	pop	r0
+ 5a6:	0f be       	out	0x3f, r0	; 63
+ 5a8:	0f 90       	pop	r0
+			);
+		}
+	}
+
+	//Set clocktimer
+	TCNT1  = 0;
+ 5aa:	84 e8       	ldi	r24, 0x84	; 132
+ 5ac:	90 e0       	ldi	r25, 0x00	; 0
+ 5ae:	fc 01       	movw	r30, r24
+ 5b0:	11 82       	std	Z+1, r1	; 0x01
+ 5b2:	10 82       	st	Z, r1
+	TIFR1 = 1 << 1;
+ 5b4:	86 e3       	ldi	r24, 0x36	; 54
+ 5b6:	90 e0       	ldi	r25, 0x00	; 0
+ 5b8:	22 e0       	ldi	r18, 0x02	; 2
+ 5ba:	fc 01       	movw	r30, r24
+ 5bc:	20 83       	st	Z, r18
+	//Enable interrupts
+	sei();
+ 5be:	78 94       	sei
+	//Return to task
+	reti();
+ 5c0:	18 95       	reti
+
+000005c2 <_exit>:
+ 5c2:	f8 94       	cli
+
+000005c4 <__stop_program>:
+ 5c4:	ff cf       	rjmp	.-2      	; 0x5c4 <__stop_program>
