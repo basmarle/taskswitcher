@@ -2,7 +2,7 @@
  * AVRGCC1.c
  *
  * Created: 22-9-2015 12:52:06
- *  Author: Encya
+ *  Author: Bas van Marle
  */ 
 
 #include <stdlib.h>
@@ -19,18 +19,27 @@ typedef struct{
 	int taskClockCount;
 } kernel_settings_t;
 
+//Task Program Block
 typedef struct{
 	int id;
+	//Stack pointer high
 	int sph;
+	//Stack pointer low
 	int spl;
 	int flags;
+	//Program counter high
 	int pcl;
+	//Program counter low
 	int pch;
+	//First address of a task
 	void * address;
+	//Used so no context is loaded when a tasks runs for the first time
 	int firsttime;
+	//True if the task is finished and need to be removed
 	int markedforremoval;
 } task_table_t;
 
+//Linked list for all the tasks
 struct node{
 	task_table_t * task;
 	struct node * next;
@@ -38,6 +47,7 @@ struct node{
 
 struct node *root;
 struct node *current_node;
+struct node *previous_node;
 
 task_table_t task_table[MAX_TASKS];
 kernel_settings_t kernel_settings;
@@ -50,11 +60,8 @@ void * task1(){
 	long a = 0;
 	while(1){
 		a++;
-		//if(a == 5000){
-			PORTB = (0 << PINB5);
-			a = 0;
-		//}
-		
+		PORTB = (0 << PINB5);
+		a = 0;
 	}
 }
 
@@ -63,26 +70,17 @@ void * task2(){
 	long b = 0;
 	while(1){
 		b++;
-		//if(b == 5000){
-			PORTB = (1 << PINB5);
-			b = 0;
-		//}
+		PORTB = (1 << PINB5);
+		b = 0;
 	}
 }
 
 //Task3
 void * task3(){
-	/*int tempTeller = 0;
-	for(int i = 0; i < 50; i++){
-		tempTeller++;
-	}*/
-	
-	int telding = TIMER1_COMPA_vect;
-
 	current_node->task->markedforremoval = 1;
-	//End of task
+	//End of task, jump to ISR
 	asm("ijmp" :: "z" (TIMER1_COMPA_vect));
-	telding = 86;
+	
 	/*asm("MOV R18, %[highAddress]" :: [highAddress] "r" (((int)TIMER1_COMPA_vect & 0xFF00) >> 8));
 	asm("PUSH R18");
 	asm("MOV R18, %[lowAddress]" :: [lowAddress] "r" (((int)TIMER1_COMPA_vect & 0x00FF)));
@@ -93,7 +91,7 @@ void * task3(){
 void initTask(void * taskAddress){
 	static int taskCount = 0;
 	
-	//Only use the root for the firsttask
+	//Only use the root for the first task
 	if(taskCount == 0){
 		root->task = malloc(sizeof(task_table_t));
 		root->next = 0;
@@ -104,7 +102,6 @@ void initTask(void * taskAddress){
 		current_node->next = 0;
 	}
 	
-	//root->task->
 	//Set ID of task
 	current_node->task->id = taskCount;
 	//Start address of the task
@@ -112,10 +109,12 @@ void initTask(void * taskAddress){
 	//Split into 2 bytes
 	current_node->task->pcl = ((int)current_node->task->address & 0x00FF);
 	current_node->task->pch = ((int)current_node->task->address & 0xFF00) >> 8;
-	//Set taskpointer
+	//Set task pointer
 	current_node->task->spl = (0x7D0 - (taskCount * 0x64)) & 0x00FF;
 	current_node->task->sph = ((0x7D0 - (taskCount * 0x64)) & 0xFF00) >> 8;
+	//Always first time
 	current_node->task->firsttime = 1;
+	//Not suitable for removal
 	current_node->task->markedforremoval = 0;
 	
 	taskCount++;
@@ -123,16 +122,21 @@ void initTask(void * taskAddress){
 
 int main(void)
 {
-	cli();//stop interrupts
+	//stop interrupts
+	cli();
 	
 	//All pins in PORTD are outputs
 	DDRB = 0b11111111;    
 	//Set the tik count for each task
 	kernel_settings.taskClockCount = 100;
 
-	TCCR1A = 0;// set entire TCCR1A register to 0
-	TCCR1B = 0;// same for TCCR1B
-	TCNT1  = 0;//initialize counter value to 0
+	// set entire TCCR1A register to 0
+	TCCR1A = 0;
+	// same for TCCR1B
+	TCCR1B = 0;
+	//initialize counter value to 0
+	TCNT1  = 0;
+	//Count to
 	OCR1A = kernel_settings.taskClockCount;
 	// turn on CTC mode
 	TCCR1B |= (1 << WGM12);
@@ -229,13 +233,20 @@ ISR (TIMER1_COMPA_vect)
 			asm volatile("MOV %[lowAdress], r0 ": [lowAdress] "=r" (current_node->task->spl) : );
 			asm volatile("in    r0, __SP_H__");
 			asm volatile("MOV %[highAdress], r0 ": [highAdress] "=r" (current_node->task->sph) : );
-		} else{
-			//Remove current_node from linked_list
-			//current_node = current_node->next;
 		}
+	
 		//Select the current task
 		if(current_node->next->task->markedforremoval){
-			current_node = current_node->next->next;
+			//Remember the task for removal
+			previous_node = current_node->next;
+			//Skip the task for removal
+			current_node->next = previous_node->next;
+			current_node = current_node->next;
+			
+			//Delete the task to be removed
+			free(previous_node->task);
+			previous_node->next = 0;
+			free(previous_node);
 		} else {
 			current_node = current_node->next;
 		}
@@ -307,56 +318,4 @@ ISR (TIMER1_COMPA_vect)
 	sei();
 	//Return to task
 	reti();
-}
-
-//NOT USED
-//Save context of the current task
-void saveContext(int current_task){
-	//Save all registers
-	asm volatile (						\
-	"push  r0                    \n\t" \
-	"in    r0, __SREG__          \n\t" \
-	"cli                         \n\t" \
-	"push  r0                    \n\t" \
-	"push  r1                    \n\t" \
-	"clr   r1                    \n\t" \
-	"push  r2                    \n\t" \
-	"push  r3                    \n\t" \
-	"push  r4                    \n\t" \
-	"push  r5                    \n\t" \
-	"push  r6                    \n\t" \
-	"push  r7                    \n\t" \
-	"push  r8                    \n\t" \
-	"push  r9                    \n\t" \
-	"push  r10                   \n\t" \
-	"push  r11                   \n\t" \
-	"push  r12                   \n\t" \
-	"push  r13                   \n\t" \
-	"push  r14                   \n\t" \
-	"push  r15                   \n\t" \
-	"push  r16                   \n\t" \
-	"push  r17                   \n\t" \
-	"push  r19                   \n\t" \
-	"push  r20                   \n\t" \
-	"push  r21                   \n\t" \
-	"push  r22                   \n\t" \
-	"push  r23                   \n\t" \
-	"push  r24                   \n\t" \
-	"push  r25                   \n\t" \
-	"push  r26                   \n\t" \
-	"push  r27                   \n\t" \
-	"push  r28                   \n\t" \
-	"push  r29                   \n\t" \
-	"push  r30                   \n\t" \
-	"push  r31                   \n\t");
-	
-	//Store stackpointer in TCB
-	asm volatile("in    r0, __SP_L__");
-	asm volatile("MOV %[lowAdress], r0 ": [lowAdress] "=r" (task_table[current_task].spl) : );
-	asm volatile("in    r0, __SP_H__");
-	asm volatile("MOV %[highAdress], r0 ": [highAdress] "=r" (task_table[current_task].sph) : );
-}
-//NOT USED
-void restoreContext(){
-	
 }

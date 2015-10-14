@@ -15,6 +15,7 @@ Common symbol       size              file
 __brkval            0x2               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(malloc.o)
 kernel_settings     0x2               AVRGCC1.o
 root                0x2               AVRGCC1.o
+previous_node       0x2               AVRGCC1.o
 current_node        0x2               AVRGCC1.o
 __flp               0x2               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(malloc.o)
 task_table          0x24              AVRGCC1.o
@@ -28,10 +29,6 @@ Discarded input sections
  .bss           0x00000000        0x0 AVRGCC1.o
  .bss.current_task
                 0x00000000        0x2 AVRGCC1.o
- .text.saveContext
-                0x00000000       0xae AVRGCC1.o
- .text.restoreContext
-                0x00000000        0xe AVRGCC1.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
@@ -200,7 +197,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x90e
+.text           0x00000000      0x950
  *(.vectors)
  .vectors       0x00000000       0x68 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -288,25 +285,25 @@ END GROUP
                 0x000000a6                task1
  .text.task2    0x000000e2       0x3e AVRGCC1.o
                 0x000000e2                task2
- .text.task3    0x00000120       0x44 AVRGCC1.o
+ .text.task3    0x00000120       0x2e AVRGCC1.o
                 0x00000120                task3
  .text.initTask
-                0x00000164      0x1c8 AVRGCC1.o
-                0x00000164                initTask
- .text.main     0x0000032c       0xf6 AVRGCC1.o
-                0x0000032c                main
+                0x0000014e      0x1c8 AVRGCC1.o
+                0x0000014e                initTask
+ .text.main     0x00000316       0xf6 AVRGCC1.o
+                0x00000316                main
  .text.__vector_11
-                0x00000422      0x28e AVRGCC1.o
-                0x00000422                __vector_11
+                0x0000040c      0x2e6 AVRGCC1.o
+                0x0000040c                __vector_11
  .text.avr-libc
-                0x000006b0      0x25a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(malloc.o)
-                0x000006b0                malloc
-                0x000007da                free
-                0x0000090a                . = ALIGN (0x2)
+                0x000006f2      0x25a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(malloc.o)
+                0x000006f2                malloc
+                0x0000081c                free
+                0x0000094c                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000090a        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
-                0x0000090a                _exit
-                0x0000090a                exit
+ .fini9         0x0000094c        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
+                0x0000094c                _exit
+                0x0000094c                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -325,11 +322,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000090a        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
+ .fini0         0x0000094c        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x0000090e                _etext = .
+                0x00000950                _etext = .
 
-.data           0x00800100        0x8 load address 0x0000090e
+.data           0x00800100        0x8 load address 0x00000950
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(malloc.o)
@@ -347,7 +344,7 @@ END GROUP
                 0x00800108                _edata = .
                 0x00800108                PROVIDE (__data_end, .)
 
-.bss            0x00800108       0x32
+.bss            0x00800108       0x34
                 0x00800108                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
@@ -356,24 +353,25 @@ END GROUP
  .bss.taskCount.1676
                 0x0080010a        0x2 AVRGCC1.o
  *(COMMON)
- COMMON         0x0080010c       0x2a AVRGCC1.o
+ COMMON         0x0080010c       0x2c AVRGCC1.o
                 0x0080010c                kernel_settings
                 0x0080010e                root
-                0x00800110                current_node
-                0x00800112                task_table
- COMMON         0x00800136        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(malloc.o)
-                0x00800136                __brkval
-                0x00800138                __flp
-                0x0080013a                PROVIDE (__bss_end, .)
-                0x0000090e                __data_load_start = LOADADDR (.data)
-                0x00000916                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00800110                previous_node
+                0x00800112                current_node
+                0x00800114                task_table
+ COMMON         0x00800138        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(malloc.o)
+                0x00800138                __brkval
+                0x0080013a                __flp
+                0x0080013c                PROVIDE (__bss_end, .)
+                0x00000950                __data_load_start = LOADADDR (.data)
+                0x00000958                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0080013a        0x0
-                0x0080013a                PROVIDE (__noinit_start, .)
+.noinit         0x0080013c        0x0
+                0x0080013c                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x0080013a                PROVIDE (__noinit_end, .)
-                0x0080013a                _end = .
-                0x0080013a                PROVIDE (__heap_start, .)
+                0x0080013c                PROVIDE (__noinit_end, .)
+                0x0080013c                _end = .
+                0x0080013c                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -438,38 +436,38 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0x58
+.debug_aranges  0x00000000       0x48
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x58 AVRGCC1.o
+                0x00000000       0x48 AVRGCC1.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x327
+.debug_info     0x00000000      0x2e5
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0x327 AVRGCC1.o
+ .debug_info    0x00000000      0x2e5 AVRGCC1.o
 
-.debug_abbrev   0x00000000      0x17f
+.debug_abbrev   0x00000000      0x158
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x17f AVRGCC1.o
+ .debug_abbrev  0x00000000      0x158 AVRGCC1.o
 
-.debug_line     0x00000000      0x1a9
+.debug_line     0x00000000      0x17f
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000      0x1a9 AVRGCC1.o
+ .debug_line    0x00000000      0x17f AVRGCC1.o
 
-.debug_frame    0x00000000      0x110
+.debug_frame    0x00000000       0xd0
  *(.debug_frame)
- .debug_frame   0x00000000      0x110 AVRGCC1.o
+ .debug_frame   0x00000000       0xd0 AVRGCC1.o
 
-.debug_str      0x00000000      0x24e
+.debug_str      0x00000000      0x22a
  *(.debug_str)
- .debug_str     0x00000000      0x24e AVRGCC1.o
-                                0x28c (size before relaxing)
+ .debug_str     0x00000000      0x22a AVRGCC1.o
+                                0x268 (size before relaxing)
 
-.debug_loc      0x00000000      0x1f8
+.debug_loc      0x00000000      0x168
  *(.debug_loc)
- .debug_loc     0x00000000      0x1f8 AVRGCC1.o
+ .debug_loc     0x00000000      0x168 AVRGCC1.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -489,9 +487,9 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x48
+.debug_ranges   0x00000000       0x38
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x48 AVRGCC1.o
+ .debug_ranges  0x00000000       0x38 AVRGCC1.o
 
 .debug_macro
  *(.debug_macro)
