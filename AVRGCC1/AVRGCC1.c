@@ -13,6 +13,7 @@
 
 volatile int counter = 0;
 volatile int firstrun = 1;
+volatile int returnFromBlocked = 0;
 
 typedef struct{
 	int isrTicks;
@@ -22,14 +23,14 @@ typedef struct{
 typedef struct{
 	int id;
 	//Stack pointer high
-	int sph;
+	int * sph;
 	//Stack pointer low
-	int spl;
+	int * spl;
 	int flags;
 	//Program counter high
 	int pcl;
 	//Program counter low
-	int pch;
+	int  pch;
 	//First address of a task
 	void * address;
 	//Used so no context is loaded when a tasks runs for the first time
@@ -38,6 +39,8 @@ typedef struct{
 	int markedforremoval;
 	//Sleep counter
 	long sleepCounter;
+	//temp var for sleeping tests
+	int sleeping;
 } task_table_t;
 
 //DoubleLinked list for all the tasks
@@ -50,13 +53,18 @@ struct node{
 struct node *root;
 struct node *current_node;
 struct node *previous_node;
+struct node *temp;
 
 task_table_t task_table[MAX_TASKS];
 kernel_settings_t kernel_settings;
 
+register unsigned char reg1 asm("r2");
+register unsigned char reg2 asm("r3");
+
 //Declare the ISR as a naked function
 ISR (TIMER1_COMPA_vect) __attribute__ ((naked));
-void sleep(long time) __attribute__((naked));
+void * sleep(long time) __attribute__((naked));
+
 //Task1
 void * task1(){
 	long a = 0;
@@ -64,6 +72,8 @@ void * task1(){
 		a++;
 		PORTB = (0 << PINB5);
 		a = 0;
+		sleep(10);
+		PORTB = (1 << PINB5);
 		sleep(10);
 	}
 }
@@ -73,7 +83,7 @@ void * task2(){
 	long b = 0;
 	while(1){
 		b++;
-		PORTB = (1 << PINB5);
+		//PORTB = (1 << PINB5);
 		b = 0;
 	}
 }
@@ -116,6 +126,8 @@ void initTask(void * taskAddress){
 	current_node->task->markedforremoval = 0;
 	//Set sleep counter 0
 	current_node->task->sleepCounter = 0;
+	//Temp var for sleeping test
+	current_node->task->sleeping = 0;
 	taskCount++;
 }
 
@@ -147,12 +159,13 @@ int main(void)
 	root = malloc(sizeof(struct node));
 	current_node  = root;
 	initTask(task1);
+	temp = current_node;
 	initTask(task2);
 	initTask(task3);
 	current_node->next = root;
 	root->previous = current_node;
 	current_node  = root;
-	
+
 	//allow interrupts
 	sei();
 	
@@ -164,8 +177,14 @@ int main(void)
 	
 }
 
-void sleep(long time){
-	current_node->task->sleepCounter = time * kernel_settings.isrTicks;
+
+void * sleep(long time){
+	current_node->task->sleepCounter = (time * kernel_settings.isrTicks) * 2;
+	current_node->previous->next = current_node->next;
+	current_node->next->previous = current_node->previous;
+	current_node->task->sleeping = 1;
+	//Tell the ISR we are comming back early because a task is blocked
+	returnFromBlocked = 1;
 	asm("ijmp" :: "z" (TIMER1_COMPA_vect));
 }
 
@@ -175,11 +194,26 @@ ISR (TIMER1_COMPA_vect)
 	//Disable interrupts
 	cli();
 	
-	//Toggle dispatcher every 1 ms
-	dispatcher ^= 1;
-	
+	if(returnFromBlocked){
+		dispatcher = 1;
+		returnFromBlocked = 0;
+	} else {		
+		//Toggle dispatcher every 1 ms
+		dispatcher ^= 1;
+	}
 	//update timers
 	//TODO
+	if(root->task->sleepCounter > 0){
+		root->task->sleepCounter -= (kernel_settings.isrTicks);
+	} else if(root->task->sleeping){
+		//Reset the sleep if < 0
+		root->task->sleepCounter = 0;
+		current_node->next = root;
+		current_node->previous = root;
+		root->next = current_node;
+		root->previous = current_node;
+		root->task->sleeping = 0;
+	}
 	
 	//Do not switch context on first run
 	if(firstrun){
@@ -241,10 +275,19 @@ ISR (TIMER1_COMPA_vect)
 			"push  r31                   \n\t");
 			
 			//Store stackpointer in TCB
-			asm volatile("in    r0, __SP_L__");
-			asm volatile("MOV %[lowAdress], r0 ": [lowAdress] "=r" (current_node->task->spl) : );
-			asm volatile("in    r0, __SP_H__");
-			asm volatile("MOV %[highAdress], r0 ": [highAdress] "=r" (current_node->task->sph) : );
+			
+			asm volatile("in    r2, __SP_L__");
+			current_node->task->spl = reg1;
+			//asm("lds r26,%0" :: "Q" (current_node->task->spl));
+			//asm volatile("STS %0,R25", :: "=r" (a));
+			//asm volatile("MOV %[lowAdress], r0 ": [lowAdress] "=r" (a) :);
+			//current_node->task->spl = a;
+			//current_node->task->spl = regReader;
+			
+			asm volatile("in    r3, __SP_H__");
+			current_node->task->sph = reg2;
+			//asm volatile("MOV %[highAdress], r0 ": [highAdress] "=r" (b) : );
+			//current_node->task->sph = b;
 		}
 	
 		//Select the current task
