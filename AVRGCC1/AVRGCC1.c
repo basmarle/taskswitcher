@@ -12,11 +12,10 @@
 #define MAX_TASKS 2
 
 volatile int counter = 0;
-volatile int current_task = 0;
 volatile int firstrun = 1;
 
 typedef struct{
-	int taskClockCount;
+	int isrTicks;
 } kernel_settings_t;
 
 //Task Program Block
@@ -37,12 +36,15 @@ typedef struct{
 	int firsttime;
 	//True if the task is finished and need to be removed
 	int markedforremoval;
+	//Sleep counter
+	long sleepCounter;
 } task_table_t;
 
-//Linked list for all the tasks
+//DoubleLinked list for all the tasks
 struct node{
 	task_table_t * task;
 	struct node * next;
+	struct node * previous;
 };
 
 struct node *root;
@@ -54,7 +56,7 @@ kernel_settings_t kernel_settings;
 
 //Declare the ISR as a naked function
 ISR (TIMER1_COMPA_vect) __attribute__ ((naked));
-
+void sleep(long time) __attribute__((naked));
 //Task1
 void * task1(){
 	long a = 0;
@@ -62,6 +64,7 @@ void * task1(){
 		a++;
 		PORTB = (0 << PINB5);
 		a = 0;
+		sleep(10);
 	}
 }
 
@@ -80,12 +83,6 @@ void * task3(){
 	current_node->task->markedforremoval = 1;
 	//End of task, jump to ISR
 	asm("ijmp" :: "z" (TIMER1_COMPA_vect));
-	
-	/*asm("MOV R18, %[highAddress]" :: [highAddress] "r" (((int)TIMER1_COMPA_vect & 0xFF00) >> 8));
-	asm("PUSH R18");
-	asm("MOV R18, %[lowAddress]" :: [lowAddress] "r" (((int)TIMER1_COMPA_vect & 0x00FF)));
-	asm("PUSH R18");
-	asm("RET");*/
 }
 
 void initTask(void * taskAddress){
@@ -97,6 +94,7 @@ void initTask(void * taskAddress){
 		root->next = 0;
 	} else {
 		current_node->next = malloc(sizeof(task_table_t));
+		current_node->next->previous = current_node;
 		current_node = current_node->next;
 		current_node->task = malloc(sizeof(task_table_t));
 		current_node->next = 0;
@@ -116,7 +114,8 @@ void initTask(void * taskAddress){
 	current_node->task->firsttime = 1;
 	//Not suitable for removal
 	current_node->task->markedforremoval = 0;
-	
+	//Set sleep counter 0
+	current_node->task->sleepCounter = 0;
 	taskCount++;
 }
 
@@ -124,11 +123,10 @@ int main(void)
 {
 	//stop interrupts
 	cli();
-	
 	//All pins in PORTD are outputs
 	DDRB = 0b11111111;    
-	//Set the tik count for each task
-	kernel_settings.taskClockCount = 100;
+	//Set the tick count for the ISR
+	kernel_settings.isrTicks = 8000;
 
 	// set entire TCCR1A register to 0
 	TCCR1A = 0;
@@ -137,7 +135,7 @@ int main(void)
 	//initialize counter value to 0
 	TCNT1  = 0;
 	//Count to
-	OCR1A = kernel_settings.taskClockCount;
+	OCR1A = kernel_settings.isrTicks;
 	// turn on CTC mode
 	TCCR1B |= (1 << WGM12);
 	// Set bit for prescaler
@@ -145,15 +143,18 @@ int main(void)
 	// enable timer compare interrupt
 	TIMSK1 |= (1 << OCIE1A);
 	
-	
+	//Create a root TCB
 	root = malloc(sizeof(struct node));
 	current_node  = root;
 	initTask(task1);
 	initTask(task2);
 	initTask(task3);
 	current_node->next = root;
+	root->previous = current_node;
 	current_node  = root;
-	sei();//allow interrupts
+	
+	//allow interrupts
+	sei();
 	
 	while (1)
 	{
@@ -163,12 +164,22 @@ int main(void)
 	
 }
 
-
+void sleep(long time){
+	current_node->task->sleepCounter = time * kernel_settings.isrTicks;
+	asm("ijmp" :: "z" (TIMER1_COMPA_vect));
+}
 
 ISR (TIMER1_COMPA_vect)
 {
+	static int dispatcher = 1;
 	//Disable interrupts
 	cli();
+	
+	//Toggle dispatcher every 1 ms
+	dispatcher ^= 1;
+	
+	//update timers
+	//TODO
 	
 	//Do not switch context on first run
 	if(firstrun){
@@ -186,7 +197,8 @@ ISR (TIMER1_COMPA_vect)
 		asm("PUSH 18");
 		current_node->task->firsttime = 0;
 		
-	} else {
+	}
+	if(dispatcher) {
 		//Save context only if task is not marked for removal
 		if(!current_node->task->markedforremoval) {
 			//Save context
@@ -240,7 +252,10 @@ ISR (TIMER1_COMPA_vect)
 			//Remember the task for removal
 			previous_node = current_node->next;
 			//Skip the task for removal
-			current_node->next = previous_node->next;
+			current_node->next = current_node->next->next;
+			//Set the  previous node to the current node
+			current_node->next->previous = current_node;
+			//Select the next node
 			current_node = current_node->next;
 			
 			//Delete the task to be removed
@@ -251,7 +266,7 @@ ISR (TIMER1_COMPA_vect)
 			current_node = current_node->next;
 		}
 		
-		
+		//If the task is running for the first time we do not need to load the context from the stack
 		if(current_node->task->firsttime){
 			asm volatile("MOV r0, %[lowAddress] " :: [lowAddress] "r" (current_node->task->spl));
 			asm volatile("OUT __SP_L__, r0");
@@ -311,9 +326,9 @@ ISR (TIMER1_COMPA_vect)
 	}
 
 	//Set clocktimer
-	TCNT1  = 0;
+	//TCNT1  = 0;
 	//Reset interruptbit
-	TIFR1 = 1 << 1;
+	//TIFR1 = 1 << 1;
 	//Enable interrupts
 	sei();
 	//Return to task
