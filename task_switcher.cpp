@@ -21,6 +21,10 @@ volatile int amountBlockedTasks = 0;
 //Aantal taken
 volatile int taskCount = 0;
 
+//Declare the ISR as a naked function
+ISR (TIMER1_COMPA_vect) __attribute__ ((naked));
+void * sleep(long time) __attribute__((naked));
+void task_wrapper();
 //Settings for the kernel(ISR)
 typedef struct{
 	int isrTicks;
@@ -30,16 +34,18 @@ typedef struct{
 typedef struct{
 	int id;
 	//Stack pointer high
-	int * sph;
+	int sph;
 	//Stack pointer low
-	int * spl;
+	int spl;
 	int flags;
 	//Program counter high
 	int pcl;
 	//Program counter low
 	int  pch;
 	//First address of a task
-	void * address;
+	int address;
+	//Address of the wrapper function
+	int wrapper;
 	//Used so no context is loaded when a tasks runs for the first time
 	int firsttime;
 	//True if the task is finished and need to be removed
@@ -65,57 +71,32 @@ kernel_settings_t kernel_settings;
 register unsigned char reg1 asm("r2");
 register unsigned char reg2 asm("r3");
 
-//Declare the ISR as a naked function
-ISR (TIMER1_COMPA_vect) __attribute__ ((naked));
-void * sleep(long time) __attribute__((naked));
-//void * initTask(void * taskAddress) __attribute__ ((naked));
-//Task1
-void * task1(){
-	long a = 0;
-	while(1){
-		a++;
-		//
-		PORTB = (0 << PINB5);
-		a = 0;
-		//
-		sleep(20);
-		//
-		PORTB = (1 << PINB5);
-		//
-		sleep(20);
-	}
-}
-
-//Task2
-void * task2(){
-	long b = 0;
-	while(1){
-		b++;
-		//PORTB = (1 << PINB5);
-		b = 0;
-	}
-}
-
-//Task3
-void * task3(){
-	//
+void task_wrapper()
+{
+	int (*task)() = (int(*)())current_node_ready->task->address;
+	task();
+	cli();
 	current_node_ready->task->markedforremoval = 1;
 	//End of task, jump to ISR
 	asm("ijmp" :: "z" (TIMER1_COMPA_vect));
 }
 
-void initTask(void * taskAddress){
-	
+void init_task(int taskAddress)
+{
 	//Only use the root for the first task
 	if(taskCount == 0){
-		current_node_ready->task = malloc(sizeof(task_table_t));
+		//Create a root TCB
+		current_node_ready = (struct node * )malloc(sizeof(struct node));
+		root  = current_node_ready;
+		temp = current_node_ready;
+		current_node_ready->task = (task_table_t *)malloc(sizeof(task_table_t));
 		current_node_ready->next = current_node_ready;
 		current_node_ready->previous =  current_node_ready;
 	} else {
-		current_node_ready->next = malloc(sizeof(task_table_t));
+		current_node_ready->next = (struct node *)malloc(sizeof(task_table_t));
 		current_node_ready->next->previous = current_node_ready;
 		current_node_ready = current_node_ready->next;
-		current_node_ready->task = malloc(sizeof(task_table_t));
+		current_node_ready->task = (task_table_t * )malloc(sizeof(task_table_t));
 		current_node_ready->next = 0;
 	}
 	
@@ -123,9 +104,11 @@ void initTask(void * taskAddress){
 	current_node_ready->task->id = taskCount;
 	//Start address of the task
 	current_node_ready->task->address = taskAddress;
+	//Addres of the task wrapper
+	current_node_ready->task->wrapper = (int)task_wrapper;
 	//Split into 2 bytes
-	current_node_ready->task->pcl = ((int)current_node_ready->task->address & 0x00FF);
-	current_node_ready->task->pch = ((int)current_node_ready->task->address & 0xFF00) >> 8;
+	current_node_ready->task->pcl = (current_node_ready->task->wrapper & 0x00FF);
+	current_node_ready->task->pch = (current_node_ready->task->wrapper & 0xFF00) >> 8;
 	//Set task pointer
 	current_node_ready->task->spl = (0x7D0 - (taskCount * 0x64)) & 0x00FF;
 	current_node_ready->task->sph = ((0x7D0 - (taskCount * 0x64)) & 0xFF00) >> 8;
@@ -141,7 +124,7 @@ void initTask(void * taskAddress){
 	amountReadyTasks++;
 }
 
-int main(void)
+int start(void)
 {
 	//stop interrupts
 	cli();
@@ -165,13 +148,6 @@ int main(void)
 	// enable timer compare interrupt
 	TIMSK1 |= (1 << OCIE1A);
 	
-	//Create a root TCB
-	current_node_ready = malloc(sizeof(struct node));
-	root  = current_node_ready;
-	initTask(task1);
-	temp = current_node_ready;
-	initTask(task2);
-	initTask(task3);
 	current_node_ready->next = root;
 	root->previous = current_node_ready;
 	current_node_ready  = root;
@@ -188,7 +164,8 @@ int main(void)
 }
 
 
-void * sleep(long time){
+void * sleep(long time)
+{
 	//Disable interrupts
 	cli();
 	//Set the sleep time in the TCB
@@ -261,7 +238,7 @@ ISR (TIMER1_COMPA_vect)
 		current_node_ready->task->firsttime = 0;
 		
 	}
-	if(dispatcher) {
+	if(dispatcher || current_node_ready->task->markedforremoval) {
 		//Save context only if task is not marked for removal
 		if(!current_node_ready->task->markedforremoval) {
 			//Save context
